@@ -1,7 +1,73 @@
-# StealthReader — 隐秘小说阅读器
+# StealthReader
 
-一个看起来像系统日志查看器的 macOS 本地 txt 小说阅读器。
-深色终端风格界面，按一下 Esc 整屏变成持续滚动的仿真系统日志。
+A local txt novel reader for macOS that disguises itself as a system log viewer.
+Dark terminal-style UI; one press of `Esc` switches the entire window into an endlessly scrolling, realistic fake system log.
+
+**For your own use: `~/Desktop/StealthReader.app`** (fully self-contained — run it from anywhere)
+**To share with friends: `~/Desktop/StealthReader.zip`** (send the zip, not the raw .app)
+
+## Features
+
+- **Open local txt files**: auto-detects UTF-8 / GBK (GB18030) / UTF-16; handles LF, CR and CRLF line endings
+- **Instant open for huge files**: 7 MB in ~0.2 s, 16 MB GBK in ~0.7 s; page-based rendering, zero-lag paging
+- **Chapter sidebar**: recognizes「第X章/卷/回」(Chinese chapter headings), `Chapter N`, prologues/epilogues; ⌘\ to toggle, ⌘F to filter, click to jump; falls back to 500-line chunks when no chapters are found
+- **Stealth disguise**:
+  - **Esc boss key**: swaps the whole window for a scrolling fake macOS log (real hostname, real process names); press Esc again to return exactly where you were
+  - **Auto-disguise on switch-away**: switching to another app instantly shows the fake log (toggle in Display menu)
+  - **Disguise on window close**: reopening from the Dock always shows the log view first
+  - While disguised, every key except Esc is swallowed and the sidebar hides itself — no accidental exposure
+- **Reading progress**: remembered per file (path + size + mtime); reopening resumes where you left off; updated files start fresh
+- **Universal binary**: runs natively on both Apple silicon (arm64) and Intel (x86_64) Macs
+
+## Usage
+
+1. Launch the app; on first run macOS asks for access to your Downloads/Desktop/Documents folder — click **Allow** (standard privacy protection)
+2. Drag a txt into the window, press ⌘O, or right-click any txt → Open With → StealthReader
+
+## Keyboard Shortcuts
+
+| Key | Action |
+|---|---|
+| `Space` / `→` / `↓` / `PageDown` | Next page |
+| `←` / `↑` / `PageUp` | Previous page |
+| `Home` / `End` | Beginning / end |
+| `⌘\` | Toggle chapter sidebar |
+| `⌘F` | Filter chapters |
+| `Esc` | Boss key: reading ⇄ fake log |
+| `⌘O` | Open file |
+| `⌘+` / `⌘-` | Bigger / smaller font |
+| `⌘Q` / `⌘W` | Quit / close window (click the Dock icon to reopen) |
+
+Mouse-wheel swipe pages. The boss key works no matter whether focus is on the text, the sidebar, or the search field.
+
+## Sharing with Friends
+
+1. Send `StealthReader.zip` (448 KB, universal binary)
+2. Unzip, drag StealthReader.app into Applications (or anywhere)
+3. First launch may warn "cannot verify the developer" (unsigned, no paid notarization):
+   - macOS 13 or earlier: right-click the app → Open → Open
+   - macOS 14+: double-click once (gets blocked) → System Settings → Privacy & Security → Open Anyway
+4. First time opening a novel, allow folder access when prompted
+
+## Building from Source
+
+```bash
+./build.sh        # produces StealthReader.app (universal binary)
+swift gen_icon.swift && iconutil -c icns ConsoleIcon.iconset -o ConsoleIcon.icns   # regenerate icon (optional)
+```
+
+Requires Xcode Command Line Tools. Edit `APP_NAME` / `BUNDLE_NAME` at the top of `build.sh` to change the disguise name.
+
+## Data Storage
+
+Reading progress and recents live in `~/Library/Preferences/com.stealthreader.app.plist` (standard preferences; nothing else is written to disk).
+
+---
+
+# StealthReader（中文说明）
+
+一个伪装成系统日志查看器的 macOS 本地 txt 小说阅读器。
+深色终端风格界面，按一下 `Esc` 整屏变成持续滚动的仿真系统日志。
 
 **给你用的成品：`~/Desktop/StealthReader.app`**（独立完整，拷到哪都能跑）
 **发给朋友：`~/Desktop/StealthReader.zip`**（微信/网盘传这个，别直接发 .app）
@@ -53,7 +119,6 @@
 ## 从源码构建
 
 ```bash
-cd stealth-reader
 ./build.sh        # 产出 StealthReader.app（通用二进制）
 swift gen_icon.swift && iconutil -c icns ConsoleIcon.iconset -o ConsoleIcon.icns   # 重新生成图标（可选）
 ```
